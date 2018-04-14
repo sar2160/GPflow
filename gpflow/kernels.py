@@ -447,6 +447,14 @@ class Matern52(Stationary):
                * tf.exp(-np.sqrt(5.) * r)
 
 
+class SafeMatern32(Matern32):
+    """
+    https://github.com/GPflow/GPflow/issues/490
+    """
+    def euclid_dist(self, X, X2):
+        r2 = self.square_dist(X, X2)
+        return tf.sqrt(r2 + 1e-6)
+
 class Cosine(Stationary):
     """
     The Cosine kernel
