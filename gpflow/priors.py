@@ -59,6 +59,24 @@ class LogNormal(Prior):
     def __str__(self):
         return "logN("+str(self.mu) + "," + str(self.var) + ")"
 
+## add a student-t
+class StudentT(Prior):
+    def __init__(self, mean, scale, deg_free):
+        Prior.__init__(self)
+        self.mean = np.atleast_1d(np.array(mean, settings.float_type))
+        self.scale = np.atleast_1d(np.array(scale, settings.float_type))
+        self.deg_free = np.atleast_1d(np.array(deg_free, settings.float_type))
+
+    def logp(self, x):
+        return tf.reduce_sum(densities.student_t(x, self.mean, self.scale, self.deg_free))
+
+    def sample(self, shape=(1,)):
+        return self.mean + self.scale*np.random.standard_t(df = self.deg_free, size=shape)
+
+    def __str__(self):
+        return "student-T("+str(self.mean) + "," + str(self.scale) + str(self.deg_free) + ")"
+
+
 
 class Gamma(Prior):
     def __init__(self, shape, scale):
